@@ -1,0 +1,188 @@
+const Discord = require("discord.js");
+const config = require("./config.json");
+const fs = require("fs");
+const { Client, Intents } = require('discord.js');
+const client = new Discord.Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+
+client.login(config.BOT_TOKEN);
+
+const prefix = config.prefix;
+
+client.once(`ready`, () => {
+  console.log(`Logged in as ${client.user.tag}!`)
+});
+
+client.on('message', function(message) {
+  if (message.author.bot || !message.content.startsWith(prefix)) return;
+
+  const commandBody = message.content.slice(prefix.length);
+  const args = message.content.split(' ').slice(1);
+  const command = message.content.split(' ')[0].slice(prefix.length).toLowerCase();
+
+  if (command === 'ping') {
+    message.reply('Pong!');
+  }
+
+  if (command === 'assignment' || command === "a") {
+    if (args.length < 3) {
+      message.reply("You need at least three arguments. (!assignment add <class> <name> [date])")
+    } else if (args[0] == "add"){
+      classname = args[1];
+      name = "";
+      date = args[args.length - 1];
+
+      for (let i = 2; i < args.length - 2; i++) {
+        name = name + args[i] + " ";
+      }
+
+      const assignment = new Assignment(classname, name, date);
+      console.log(JSON.stringify(assignment, null, 2))
+    }
+  }
+
+  if (command === 'assignments' || command === "as") {
+    if (args.length != 0) {
+      fs.readFile("assignments.json", function(err, data) {
+          if (err) throw err;
+          const assignments = JSON.parse(data);
+
+          if (args[0].toLowerCase() == "enviro" || args[0].toLowerCase() == "es") {
+            enviroAssignments = assignments.Enviro;
+            let text = "**" + "Period 1 - AP Enviro (Prater)" + "**";
+            text = text + "\n```\n";
+            if (enviroAssignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < enviroAssignments.length; i++) {
+                text = text + convertToString(enviroAssignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "robotics" || args[0].toLowerCase() == "r") {
+            roboticsAssignments = assignments.Robotics;
+            let text = "**" + "Period 2 - Robotics 3 (Oakman)" + "**";
+            text = text + "\n```\n";
+            if (roboticsAssignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < roboticsAssignments.length; i++) {
+                text = text + convertToString(roboticsAssignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "stat" || args[0].toLowerCase() == "stat" || args[0].toLowerCase() == "s") {
+            statAssignments = assignments.Statistics;
+            let text = "**" + "Period 3 - AP Statistics (Ozar)" + "**";
+            text = text + "\n```\n";
+            if (statAssignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < statAssignments.length; i++) {
+                text = text + convertToString(statAssignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "english" || args[0].toLowerCase() == "en") {
+            englishAssignments = assignments.English;
+            let text = "**" + "Period 4 - AP English 4 (Naberhaus)" + "**";
+            text = text + "\n```\n";
+            if (englishAssignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < englishAssignments.length; i++) {
+                text = text + convertToString(englishAssignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "python" || args[0].toLowerCase() == "p") {
+            pythonAssignments = assignments.Python;
+            let text = "**" + "Period 5 - Python (Keays)" + "**";
+            text = text + "\n```\n";
+            if (pythonAssignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < pythonAssignments.length; i++) {
+                text = text + convertToString(pythonAssignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "apush" || args[0].toLowerCase() == "us" || args[0].toLowerCase() == "history" || args[0].toLowerCase() == "h") {
+            apushAssignments = assignments.APUSH;
+            let text = "**" + "Period 6 - AP US History (Brennan)" + "**";
+            text = text + "\n```\n";
+            if (apushAssignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < apushAssignments.length; i++) {
+                text = text + convertToString(apushAssignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "csm145" || args[0].toLowerCase() == "m145" || args[0].toLowerCase() == "145" || args[0].toLowerCase() == "cs145") {
+            csm145Assignments = assignments.CSM145;
+            let text = "**" + "CS M145" + "**";
+            text = text + "\n```\n";
+            if (csm145Assignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < csm145Assignments.length; i++) {
+                text = text + convertToString(csm145Assignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+
+          if (args[0].toLowerCase() == "csm155" || args[0].toLowerCase() == "m155" || args[0].toLowerCase() == "155" || args[0].toLowerCase() == "cs155") {
+            csm155Assignments = assignments.CSM155;
+            let text = "**" + "CS M155" + "**";
+            text = text + "\n```\n";
+            if (csm155Assignments.length == 0) {
+              text = text + "-none"
+            } else {
+              for (let i = 0; i < csm155Assignments.length; i++) {
+                text = text + convertToString(csm155Assignments[i]) + "\n";
+              }
+            }
+            text = text + "```";
+            message.reply(text);
+          }
+        });
+    } else {
+      fs.readFile("assignments.json", function(err, data) {
+          if (err) throw err;
+          const assignments = JSON.parse(data);
+          classesArray = [assignments.Enviro, assignments.Robotics, assignments.Statistics, assignments.English, assignments.Python, assignments.APUSH, assignments.CSM145, assignments.CSM155];
+          for (let i = 0; i < assignments.length; i++){
+            assignmentsJSON = JSON.stringify(assignments[i]);
+            const assignment = JSON.parse(assignmentsJSON);
+          }
+      });
+    }
+  }
+});
+
+function convertToString(assignment) {
+  let text = "";
+  text = text + "- " + assignment.assignment;
+  text = text + " (" + assignment.date + ")"
+  return text;
+}
